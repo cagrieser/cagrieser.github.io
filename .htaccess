@@ -1,0 +1,31 @@
+FLAG{T3BR1Kl3R_AcC3SHtLenD1N}
+
+
+.htaccess (Hypertext Access) dosyası, Apache web sunucusu tarafından kullanılan bir konfigürasyon dosyasıdır. 
+Bu dosya, bir web sunucusunun davranışını ve ayarlarını değiştirmek için kullanılır. 
+.htaccess dosyası, bir dizinde bulunduğunda, o dizin ve alt dizinleri etkileyen yönergeleri içerir.
+
+.htaccess dosyasının bazı kullanımları ve yapabilecekleri aşağıda listelenmiştir:
+
+Yönlendirme (Redirects): .htaccess dosyası, belirli bir URL'yi başka bir URL'ye yönlendirmek için kullanılabilir. 
+Örneğin, "301 yönlendirmesi" olarak bilinen kalıcı yönlendirmelerin kurulması bu dosya aracılığıyla gerçekleştirilebilir.
+
+Kimlik Doğrulama (Authentication): .htaccess dosyası, belirli dizinlerin veya dosyaların erişimi için kimlik doğrulama gereksinimleri belirlemek için kullanılabilir. 
+Kullanıcı adı ve şifre gibi kimlik bilgileriyle erişimi sınırlamak için temel kimlik doğrulama veya Digest kimlik doğrulama kullanılabilir.
+
+İzinlerin Kontrolü (Permissions): .htaccess dosyası, belirli dosyalara veya dizinlere erişimi sınırlamak veya izinleri değiştirmek için kullanılabilir.
+ Örneğin, belirli dosya türlerine erişimi engellemek veya doğrudan erişimi sınırlamak için kullanılabilir.
+
+Önbellekleme (Caching): .htaccess dosyası, sunucunun içerik önbellekleme davranışını kontrol etmek için kullanılabilir. 
+Bu, tarayıcı önbelleğinde tutulan verilerin süresini, önbelleğe alınacak öğeleri veya istemcilerin içerikle nasıl etkileşimde bulunacaklarını belirlemek için kullanılabilir.
+
+MIME Türleri (MIME Types): .htaccess dosyası, sunucunun belirli dosya türlerini doğru şekilde sunması için MIME türlerini belirlemek için kullanılabilir. 
+Bu, sunucunun belirli dosya türlerini tanıması ve doğru içerik türünü ileterek tarayıcı uyumluluğunu artırır.
+
+URL Yeniden Yazma (URL Rewriting): .htaccess dosyası, URL yapılarını değiştirmek veya yeniden yazmak için kullanılabilir. 
+Bu, daha kısa ve anlaşılır URL'ler oluşturmak veya dinamik URL'leri statik URL'lere dönüştürmek için kullanılabilir.
+
+Bu sadece birkaç örnek olup, .htaccess dosyası birçok farklı ayarı ve yönergeyi içerebilir. Bununla birlikte, 
+.htaccess dosyasını kullanırken dikkatli olunmalıdır çünkü yanlış yapılandırmalar web sunucusunun düzgün çalışmasına engel olabilir.
+
+

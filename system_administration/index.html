@@ -1,0 +1,24 @@
+Herkese açık admin panelleri, web uygulamalarında yaygın bir güvenlik sorunudur.
+ Bu panellerin yetkisiz kişiler tarafından keşfedilmesi veya brute force saldırılarına maruz kalması, ciddi güvenlik zafiyetlerine yol açabilir.
+ Bu makalede, herkese açık admin panellerinin potansiyel tehlikelerini ve bu zafiyetlere karşı alınması gereken güvenlik önlemlerini ele alacağız.
+
+Admin Panelinin Gizliliği:
+Admin paneline erişimi sınırlamak için ilk adım, panelin gizli kalmasını sağlamaktır.
+ Admin panelinin URL'sini tahmin edilmesi zor bir şekilde yaplandırarak veya gizli bir alt alan adı veya dizin altında barındırarak, yetkisiz erişimi engelleyebilirsiniz. 
+ Ayrıca, arama motorları tarafından indekslenmemesini sağlamak için robots.txt dosyasında gerekli ayarlamaları yapmalısınız.
+
+Güçlü Kullanıcı Kimlik Doğrulama:
+Admin paneline erişim sağlamak için kullanılan kimlik doğrulama mekanizması güçlü olmalıdır. 
+Güçlü bir parola politikası uygulanmalı ve kullanıcılar, karmaşık ve benzersiz parolalar seçmeye teşvik edilmelidir.
+ İki faktörlü kimlik doğrulama gibi ek güvenlik önlemleri de uygulanabilir.
+
+Brute Force Saldırılarına Karşı Korumalar:
+Brute force saldırıları, zayıf veya tahmin edilebilir parolaları keşfetmek için sürekli deneme yaparak gerçekleştirilir. 
+Bu tür saldırılara karşı önlem almak için bazı yöntemler kullanılabilir. 
+Bunlar arasında oturum açma denemelerinin sınırlanması (örneğin, belirli bir süre içinde belirli bir IP adresinden gelen denemelerin engellenmesi), 
+CAPTCHA doğrulama kullanımı ve IP adresi tabanlı erişim kısıtlamaları bulunur.
+
+Güncel Yazılım ve Zamanında Güncellemeler:FLAG{4DM1N_P4N3L_L34K}
+Kullanılan admin paneli yazılımının güncel ve güvenli bir sürümünü kullanmak önemlidir. 
+Sürüm güncellemeleri genellikle güvenlik açıklarını düzeltir ve yeni koruma önlemleri ekler. 
+Bu nedenle, panel yazılımının düzenli olarak güncellenmesi ve yamaların zamanında uygulanması gerekmektedir.

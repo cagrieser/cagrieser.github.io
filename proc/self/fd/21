@@ -1,0 +1,12 @@
+
+FLAG{PR0C_S3LF_COnTr0L}
+
+/proc/self/fd/21 ifadesi, Unix veya Unix benzeri işletim sistemlerindeki /proc dosya sistemi içindeki bir sembolik bağlantıyı temsil eder. Bu ifade, işletim sistemi tarafından sağlanan bir yol veya dosya tanıtıcısını ifade eder.
+
+/proc dosya sistemi, işletim sistemi hakkında bilgi sağlayan sanal bir dosya sistemidir. /proc/self dizini, mevcut işlemi temsil eder ve işlem özdeşleme bilgilerine erişimi sağlar. /fd dizini, açık dosya tanıtıcılarını içeren sembolik bağlantıları içerir.
+
+/proc/self/fd/21 ifadesinde, 21 dosya tanıtıcısının bir sembolik bağlantı olduğunu ifade eder. Bu, mevcut işlemde açılan bir dosyayı veya aygıtı temsil eder. Bu ifadeye erişildiğinde, aslında 21 numaralı dosya tanıtıcısına yönlendirme yapılır.
+
+Örneğin, eğer /proc/self/fd/21 ifadesine bir okuma işlemi uygulanırsa, işletim sistemi aslında 21 numaralı dosya tanıtıcısını okuyarak ilgili veriyi döndürecektir.
+
+Bu ifade, sistem düzeyinde dosya ve aygıtlara erişim sağlamak için kullanılabilir. Özellikle sistem programlaması veya hata ayıklama gibi durumlarda kullanışlı olabilir. Ancak, genel kullanım senaryolarında nadiren kullanılır ve çoğunlukla geliştirme ve sistem yönetimi amaçları için ileri düzey kullanıcılar veya programcılar tarafından kullanılır.

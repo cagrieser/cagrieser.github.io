@@ -1,0 +1,34 @@
+favicon: favicon.ico
+title: "Cyber Security Articles"
+author: "Çağrı Eser"
+description: "Made with <b style=\"color: #f45;\">0x433134572D39</b>"
+permalink: /:title/
+lang: "en"
+excerpt_separator: "\n\n\n"
+date_format: "%B %d, %Y"
+
+# Layout
+
+show_excerpts: true        # show article excerpts on the home page
+show_frame: true           # adds a gray frame to the site
+show_sidebar: false      # show a sidebar instead of the usual header
+minimal: true            # use a dark header
+
+# Menu
+
+navigation:                # accepts {file, title, url, icon, sidebaricon}
+  - {file: "index.html"}
+  - {file: "READMEX.md"}
+
+external:                  # shows a footer with social links - for available icons see fontawesome.com/icons
+  - {title: Mail, icon: envelope, url: "mailto:cagriesertr@gmail.com"}
+  - {title: Github, icon: github, url: "https://github.com/cagrieser"}
+  - {title: Twitter, icon: twitter, url: "https://twitter.com"}
+  - {title: Linkedin, icon: linkedin, url: "https://www.linkedin.com/in/cagrieser/"}
+
+comments:
+#  disqus_shortname: ""    # see 
+#  isso_domain: ""         # see 
+
+plugins:
+ - jekyll-feed

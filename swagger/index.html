@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            background-color: black;
+        }
+        
+.box {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.box a {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  font-weight: bold;
+  color: red;
+  animation: moveBox 5s linear infinite;
+}
+
+@keyframes moveBox {
+  0% { top: 50%; left: 50%; }
+  25% { top: 25%; left: 75%; }
+  50% { top: 75%; left: 25%; }
+  75% { top: 25%; left: 25%; }
+  100% { top: 75%; left: 75%; }
+}
+
+
+    </style>
+</head>
+<body>
+<div class="box">
+  <a href="https://www.youtube.com/watch?v=sdbyG2MrBHk?RkxBR3tTVzRHRzNSXzMuMzYuMn0" style="text-decoration: underline; position: relative;">
+  <!-- Nolur Tıklamaya Çalış :D -->
+    <span>FLAG</span>
+  </a>
+</div>
+
+
+</body>
+</html>
+
+<!--
+
+2021 yılına kadar yapılan bir araştırmada, Swagger/OpenAPI belgelerinde XSS (Cross-Site Scripting) zafiyeti keşfedilmiştir. 
+Bu zafiyet, belge içerisinde kullanıcı tarafından sağlanan verilerin doğru bir şekilde işlenmediği durumlarda ortaya çıkabilir.
+
+https://github.com/seanmarpo/webjars-swagger-xss
+
+
+
+
+
+-->
