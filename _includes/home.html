@@ -13,7 +13,7 @@
       <a href="{{ paginator.previous_page_path | relative_url }}">«««««</a>
       <span>page {{ paginator.page }} of {{ paginator.total_pages }}</span>
       {% if paginator.page < paginator.total_pages %}
-        <a href="{{ paginator.next_page_path | relative_url }}">older posts »</a>
+        <a href="{{ paginator.next_page_path | relative_url }}">»»»»»</a>
       {% endif %}
     </footer>
   {% else %}
