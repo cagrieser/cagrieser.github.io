@@ -11,7 +11,7 @@
   {% if paginator.page > 1 %}
     <footer>
       <a href="{{ paginator.previous_page_path | relative_url }}">«««««</a>
-      <span>page {{ paginator.page }} of {{ paginator.total_pages }}</span>
+      <span>{{ paginator.page }} / {{ paginator.total_pages }}</span>
       {% if paginator.page < paginator.total_pages %}
         <a href="{{ paginator.next_page_path | relative_url }}">»»»»»</a>
       {% endif %}
