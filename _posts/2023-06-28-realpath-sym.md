@@ -128,6 +128,7 @@ Bu işlemler sonucunda, "file" dizini içinde "meow.txt" adlı bir dosya ve bu d
 `zip -r` komutu, dizin ve dosyaları sıkıştırmak için kullanılırken, `zip -ry` komutu, sıkıştırma işlemi sırasında sembolik bağlantıları da korur. Bu, sembolik bağlantılara sahip dosyaların da arşivin içine dahil edileceği anlamına gelir.
 
 Örneğin, zip -ry flag.zip file komutunu kullanarak "file" dizinini rekürsif olarak sıkıştırdığınızda, "file" dizini, içindeki dosyalar ve alt dizinler ile birlikte "flag.zip" adlı bir arşive dahil edilir. Bu şekilde, tüm dizin hiyerarşisi ve içerik korunarak sıkıştırma işlemi gerçekleştirilir.
+`file:///flag.txt` komutu ilede çözüm sağlanır.
 
 ### Symbolic Link (Sembolik Bağlantı)
 
