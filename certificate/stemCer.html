@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tübitak 4007 - STEM CTF Başarı Sertifikası 2023</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url(null.null) no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    h1 {
+      color: #333;
+      margin-top: 50px;
+    }
+
+    p {
+      color: #777;
+      margin-top: 20px;
+    }
+
+    .image-frame {
+      display: inline-block;
+      position: relative;
+      margin-top: 50px;
+      padding: 10px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .image-frame:hover:after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(circle, rgba(255, 255, 255, 0.8) 10%, transparent 80%);
+      animation: sparkle 1s infinite;
+    }
+
+    @keyframes sparkle {
+      0% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.2); opacity: 0; }
+      100% { transform: scale(1); opacity: 0.8; }
+    }
+	
+  </style>
+</head>
+<body>
+  <div class="image-frame">
+    <img src="stemCer.png" height="700" width="1000" alt="Başarı Sertifikası">
+  </div>
+</body>
+</html>
+
