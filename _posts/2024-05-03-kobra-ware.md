@@ -38,7 +38,10 @@ Seri bir şekilde şifrelenen dosyalara erişim tamamen kaybolmaktadır ve siste
 ![folder_s3](/img/SnakeGame/ransomsnake2.png)
 
 Registry bilgilerine erişimde `RegQueryValue,RegOpenKey` gibi Operation olarak aktivite tespit edilmiştir.
-`HKLM\SOFTWARE\Wow6432Node\Microsoft\Cryptography\Defaults\Provider\Microsoft Enhanced RSA and AES Cryptographic`
+
+```js
+HKLM\SOFTWARE\Wow6432Node\Microsoft\Cryptography\Defaults\Provider\Microsoft Enhanced RSA and AES Cryptographic
+```
 
 Bu bilgilerden yola çıkarak şifreleme fonksiyonunun AES veya RSA olduğu söylenebilir.Tam olarak analiz edildikten sonra kesin bir sonuca varabiliriz.
 
