@@ -125,6 +125,7 @@ Oyunla alakalı Kod Bloklarını incelediğimizde ise ;
 `internal class Snake`de ise oyun ile alakalı Yukarı , Aşağı , Sağ , Sol gibi oynama ile alakalı fonksiyonlara rastlanmıştır.
 Program ilk çalıştırdığımızda herhangi bir şekilde oyunu oynamıyoruz direkt olarak zararlı yazılım sisteme enjekte olmaktadır.
 Burada yer alan kaynak kodu alınarak oyun oynanabilir tabiki fakat şuan odak noktamız oyun olmadığı için bu yılan hikayesini burada başlamadan şimdilik sonlandıralım.
+Bunlardan bazıları aşağıda Sample olarak verilmiştir devamını ekleme gereği duymadım.
 
 ```c#
 public void Up()
