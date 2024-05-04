@@ -10,7 +10,7 @@ SnakeGame.exe Dosyasının Statik ve Dinamik Analizi
 
 #### Dosya Bilgileri
 
-Sabancı Üniversitesi Siber Güvenlik Kulubü tarafından düzenelen SUCTF etkinliğinde yer alan Malware sorusunun Write-Up'ını içermektedir.
+Sabancı Üniversitesi Siber Güvenlik Kulubü tarafından düzenelen SUCTF etkinliğinde yer alan Malware ( Dolanan Kobra )  sorusunun Write-Up'ını içermektedir.
 Dosyanın Statik ve Dinamik olarak analiz edilerek çözümlenmesi sağlanmıştır.
 
 File olarak uygulamayı incelediğimizde dosya bilgileri aşağıda ki gibidir :
@@ -97,9 +97,10 @@ Dosyanın kaynak koduna erişim ile alakalı çalışmalarda bazı verilere eri�
 
 ```C#
 public Form1()
-		{
-			new ResourceManager("Snake_Game.Properties.Resources", Assembly.GetExecutingAssembly());
-			Type type = Assembly.Load(Convert.FromBase64String("TVqQAAMAAAAEAAAA//8AALgAAAAAAAA.....")
+{
+new ResourceManager("Snake_Game.Properties.Resources", Assembly.GetExecutingAssembly());
+Type type = Assembly.Load(Convert.FromBase64String("TVqQAAMAAAAEAAAA//8AALgAAAAAAAA.....")
+}
 ```
 
 public class Form1'da İlk satır, bir ResourceManager nesnesi oluşturur. \
@@ -108,7 +109,7 @@ public class Form1'da İlk satır, bir ResourceManager nesnesi oluşturur. \
 İkinci satır, bir Type nesnesi oluşturur. `Assembly.Load()` metodu, belirtilen bağımlılığı yükler. \
 `Convert.FromBase64String()` metodu, bir Base64 kodlanmış diziyi bir byte dizisine dönüştürür. \
 Bu, ikinci parametre olarak gelen string'in Base64 kodunu çözüp, onu bir byte dizisine dönüştürür. \
-Bu byte dizisi, yürütülebilir bir dosyanın içeriğini temsil eder. Bu şekilde, yürütülebilir bir dosyanın içeriğini belleğe yükleyebilir ve ardından bu dosyanın içindeki türleri inceleyebilirsiniz. \
+Bu byte dizisi, yürütülebilir bir dosyanın içeriğini temsil eder. Bu şekilde, yürütülebilir bir dosyanın içeriğini belleğe yükleyebilir ve ardından bu dosyanın içindeki türleri inceleyebilirsiniz.
 
 Daha sonra Base64 veri Decode işlemi gerçekleştirilir. `base64 message.txt -d > DropFile`
 
@@ -120,7 +121,7 @@ Oyunla alakalı Kod Bloklarını incelediğimizde ise ;
 Program ilk çalıştırdığımızda herhangi bir şekilde oyunu oynamıyoruz direkt olarak zararlı yazılım sisteme enjekte olmaktadır.
 Burada yer alan kaynak kodu alınarak oyun oynanabilir tabiki fakat şuan odak noktamız oyun olmadığı için bunu 
 
-```C#
+```c#
 public void Up()
 		{
 			this.Follow();
@@ -203,9 +204,9 @@ namespace Liblib
 `Directory.GetFileSystemEntries(string_0)` Belirtilen dizindeki tüm dosya ve dizinlerin bir listesini alır. \
 `foreach (string text in Directory.GetFileSystemEntries(string_0))` Bu döngü, belirtilen dizindeki her dosya ve dizin için işlem yapar. \
 `aesCryptoServiceProvider.Key` AES Şifreleme anahtarıdır. \
- Şifreleme modu AES-CBC  olarak belirlenmiştir. `aesCryptoServiceProvider.Mode = CipherMode.CBC` \
+ Şifreleme modu AES-CBC  olarak belirlenmiştir. `aesCryptoServiceProvider.Mode = CipherMode.CBC`
  
-IV İşleyiş Biçimi 
+### IV İşleyiş Biçimi 
 
 `byte[] bytes = cryptoTransform.TransformFinalBlock(array, 0, array.Length).Concat(aesCryptoServiceProvider.IV).ToArray<byte>();` \
 Burada, `TransformFinalBlock` metodu, verilen girdi verisini şifreler ve şifrelenmiş veriyi döndürür. 
@@ -214,5 +215,61 @@ Daha sonra, `aesCryptoServiceProvider`.IV ifadesi, kullanılan IV'yi temsil eder
 Bu nedenle, IV'in şifrelenmiş verinin sonuna eklenmesi bu satırda gerçekleşiyor.
 
 `File.WriteAllBytes(text + ".enc", bytes)` Şifrelenmiş veri, orijinal dosyanın adına .enc uzantısı eklenmiş yeni bir dosyaya yazılıyor. Böylece orijinal dosyanın içeriği şifrelenmiş oluyor ve .enc uzantılı yeni dosya adı ile saklanıyor. \
-`File.Delete(text);` Orijinal dosya siliniyor. Bu adım, orijinal dosyanın şifrelenmiş bir kopyasının oluşturulduğundan ve artık orijinal dosyanın gizli içeriğinin korunmasının önemli olmadığından emin olmak için yapılıyor olabilir. \
+`File.Delete(text);` Orijinal dosya siliniyor. Bu adım, orijinal dosyanın şifrelenmiş bir kopyasının oluşturulduğundan ve artık orijinal dosyanın gizli içeriğinin korunmasının önemli olmadığından emin olmak için yapılıyor olabilir.
+
+### Şifrelenmiş Dosyaların Çözümlenmesi 
+
+```py
+from Crypto.Cipher import AES
+import os
+
+def decrypt_file(file_path, key):
+    # Anahtarın uzunluğunu kontrol edelim, 32 byte (256 bit) olmalıdır
+    if len(key) != 32:
+        print("Hata: Anahtarın uzunluğu 32 byte olmalıdır.")
+        return
+
+    # Dosya adını ve uzantısını ayıralım
+    file_name, file_ext = os.path.splitext(file_path)
+    if file_ext != '.enc':
+        print("Hata: Dosya .enc uzantılı olmalıdır.")
+        return
+
+    # Dosyanın içeriğini okuyalım
+    with open(file_path, 'rb') as f:
+        encrypted_data = f.read()
+
+    # Dosyanın son 16 byte'ı IV'dir, geri kalanı şifrelenmiş veridir
+    iv = encrypted_data[-16:]
+    ciphertext = encrypted_data[:-16]
+
+    # AES şifreleme nesnesi oluşturalım
+    cipher = AES.new(key, AES.MODE_CBC, iv)
+
+    # Şifreli veriyi çözelim
+    decrypted_data = cipher.decrypt(ciphertext)
+
+    # Dolgu byte'larını kaldıralım
+    decrypted_data = decrypted_data.rstrip(b'\0')
+
+    # Çözülmüş veriyi yazalım
+    with open(file_name + "_decrypted.txt", 'wb') as f:
+        f.write(decrypted_data)
+
+# Anahtar
+key = b'18965d524dd89173121d144428fb0956'
+
+# Dosya yolu
+file_path = 'flag.txt.enc'
+
+# Dosyayı çözelim
+decrypt_file(file_path, key)
+```
+
+### Final 
+
+```sh
+python3 Kobra.py ; cat flag.txt_decrypted.txt
+SUCTF{Just_Wanted_To_Play_a_Game_:(}
+```
 
