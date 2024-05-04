@@ -46,12 +46,14 @@ Bu bilgilerden yola çıkarak şifreleme fonksiyonunun AES veya RSA olduğu söy
 
 Kriptoloji ile alakalı bazı dizeler görülmektedi.Bunlar aşağıda sıralanmıştır.
 
-`RSACryptoServiceProvider`
-`AesCryptoServiceProvider`
-`FromBase64String`
-`MD5CryptoServiceProvider`
-`CryptoStreamMode`
-`System.Security.Cryptography.AesCryptoServiceProvider`
+```js
+RSACryptoServiceProvider
+AesCryptoServiceProvider
+FromBase64String
+MD5CryptoServiceProvider
+CryptoStreamMode
+System.Security.Cryptography.AesCryptoServiceProvider
+```
 
 Program yürütüldüğünde hızlı bir şekilde şifreleme işlemi gerçeklemeye başlamıştır.
 
@@ -208,8 +210,12 @@ namespace Liblib
  
 ### IV İşleyiş Biçimi 
 
-`byte[] bytes = cryptoTransform.TransformFinalBlock(array, 0, array.Length).Concat(aesCryptoServiceProvider.IV).ToArray<byte>();` \
+```c# 
+byte[] bytes = cryptoTransform.TransformFinalBlock(array, 0, array.Length).Concat(aesCryptoServiceProvider.IV).ToArray<byte>();
+```
+
 Burada, `TransformFinalBlock` metodu, verilen girdi verisini şifreler ve şifrelenmiş veriyi döndürür. 
+
 Daha sonra, `aesCryptoServiceProvider`.IV ifadesi, kullanılan IV'yi temsil eder ve bu IV, şifrelenmiş verinin sonuna eklenir. Son olarak, `Concat ve ToArray` metodları kullanılarak şifrelenmiş veriyle IV birleştirilir ve yeni bir byte dizisi oluşturulur.
 
 Bu nedenle, IV'in şifrelenmiş verinin sonuna eklenmesi bu satırda gerçekleşiyor.
